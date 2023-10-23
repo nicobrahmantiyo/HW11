@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  todo:
+    build: .
+    networks:
+      - app-tier
+    ports:
+      - '3000:3000'
+    depends on:
+      - dbpgsql
+    volumes:
+      - '.:/todo/src/app/'
+  dbpgsql:
+    image: postgres:16
+    ports:
+      - '5432:5432'
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASS
+      - POSTGRES_NAME
+      - POSTGRES_HOST
+    networks:
+      - app-tier
